@@ -12,18 +12,37 @@ import styles from "./ContentHandlabel.module.scss";
 interface Props {
   image: File | null;
   onImageLocked: (imageName: string) => void;
+  images: File[];
+  onImageClicked: (image: File) => void;
+  setActiveImageIndex: (index: number) => void; // เพิ่ม prop นี้
 }
 
-const ContentHandlabel: React.FC<Props> = ({ image, onImageLocked }) => {
+const ContentHandlabel: React.FC<Props> = ({
+  image,
+  onImageLocked,
+  images,
+  onImageClicked,
+  setActiveImageIndex,
+}) => {
   const [lockedImages, setLockedImages] = useState<Record<string, boolean>>({});
-  const [selectedOptions, setSelectedOptions] = useState<{ dr1: string | null, dr2: string | null }>({ dr1: "No DR", dr2: "No Glaucoma" });
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, { dr1: string; dr2: string; notes: string }>
+  >({});
   const [isTextFieldDisabled, setTextFieldDisabled] = useState(false);
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, optionType: 'dr1' | 'dr2') => {
-    setSelectedOptions(prev => ({
-      ...prev,
-      [optionType]: event.target.value
-    }));
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    optionType: "dr1" | "dr2"
+  ) => {
+    if (image) {
+      setSelectedOptions((prev) => ({
+        ...prev,
+        [image.name]: {
+          ...prev[image.name],
+          [optionType]: event.target.value,
+        },
+      }));
+    }
   };
 
   const lockImage = () => {
@@ -35,15 +54,31 @@ const ContentHandlabel: React.FC<Props> = ({ image, onImageLocked }) => {
           [image.name]: true,
         }));
         onImageLocked(image.name);
-              setTextFieldDisabled(true);
-
-
+        setTextFieldDisabled(true);
+        const currentIndex = images.findIndex((img) => img.name === image.name);
+        // ตรวจสอบว่ามีรูปภาพถัดไปหรือไม่
+        if (currentIndex !== -1 && currentIndex < images.length - 1) {
+          onImageClicked(images[currentIndex + 1]);
+          setActiveImageIndex(currentIndex + 1);
+        }
       }
     }
   };
 
   const drOptions1 = ["No DR", "DR1", "DR2", "DR3", "DR4"];
   const drOptions2 = ["No Glaucoma", "Have Glaucoma"];
+
+  const handleNotesChange = (value: string) => {
+    if (image) {
+      setSelectedOptions((prev) => ({
+        ...prev,
+        [image.name]: {
+          ...prev[image.name],
+          notes: value,
+        },
+      }));
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -68,8 +103,8 @@ const ContentHandlabel: React.FC<Props> = ({ image, onImageLocked }) => {
                     value={dr}
                     control={
                       <Radio
-                        checked={selectedOptions.dr1 === dr}
-                        onChange={(e) => handleCheckboxChange(e, 'dr1')}
+                        checked={selectedOptions[image?.name]?.dr1 === dr}
+                        onChange={(e) => handleCheckboxChange(e, "dr1")}
                         disabled={lockedImages[image?.name]}
                       />
                     }
@@ -89,8 +124,8 @@ const ContentHandlabel: React.FC<Props> = ({ image, onImageLocked }) => {
                     value={dr}
                     control={
                       <Radio
-                        checked={selectedOptions.dr2 === dr}
-                        onChange={(e) => handleCheckboxChange(e, 'dr2')}
+                        checked={selectedOptions[image?.name]?.dr2 === dr}
+                        onChange={(e) => handleCheckboxChange(e, "dr2")}
                         disabled={lockedImages[image?.name]}
                       />
                     }
@@ -108,8 +143,9 @@ const ContentHandlabel: React.FC<Props> = ({ image, onImageLocked }) => {
                 variant="outlined"
                 multiline
                 rows={8}
-                disabled={isTextFieldDisabled}
-
+                value={selectedOptions[image?.name]?.notes || ""}
+                onChange={(e) => handleNotesChange(e.target.value)}
+                disabled={lockedImages[image?.name]}
               />
             </div>
           </div>
@@ -118,7 +154,10 @@ const ContentHandlabel: React.FC<Props> = ({ image, onImageLocked }) => {
               variant="contained"
               onClick={lockImage}
               color="success"
-              disabled={!selectedOptions.dr1 || !selectedOptions.dr2}
+              disabled={
+                !selectedOptions[image?.name]?.dr1 ||
+                !selectedOptions[image?.name]?.dr2
+              }
             >
               ยืนยัน
             </Button>

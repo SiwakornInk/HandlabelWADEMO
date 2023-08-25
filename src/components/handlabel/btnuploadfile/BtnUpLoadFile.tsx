@@ -43,23 +43,33 @@ const BtnUploadFile: React.FC<Props> = ({
       </div>
       {/* List of uploaded image names */}
       <div className={styles.btnnameimg}>
-        {images.map((image, index) => (
-          <Button
-            key={index}
-            onClick={() => {
-              onImageClicked(image);
-              setActiveButtonIndex(index); // กำหนดปุ่มที่ถูกกดเป็นปุ่ม active
-            }}
-            variant="text"
-            className={`
+        {images.map((image, index) => {
+          console.log(
+            "Rendering button for",
+            image.name,
+            "active:",
+            activeButtonIndex === index,
+            "locked:",
+            lockedImages[image.name]
+          );
+          return (
+            <Button
+              key={index}
+              onClick={() => {
+                onImageClicked(image);
+                setActiveButtonIndex(index);
+              }}
+              variant="text"
+              className={`
             ${styles["image-button"]} 
             ${activeButtonIndex === index ? styles["active"] : ""}
             ${lockedImages[image.name] ? styles["locked"] : ""}
         `}
-          >
-            {image.name}
-          </Button>
-        ))}
+            >
+              {image.name}
+            </Button>
+          );
+        })}
       </div>
     </div>
   );
