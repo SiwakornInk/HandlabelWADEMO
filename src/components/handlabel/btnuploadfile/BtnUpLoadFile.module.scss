@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 200px;
+  background-color: rgb(18, 18, 18);
+  box-sizing: border-box;
+  height: calc(100vh - 50px);
+  padding: 20px;
+  overflow-y: auto; /* เพิ่มการเลื่อนแนวแกน y เมื่อข้อมูลเกิน */
+}
+
+.container::-webkit-scrollbar {
+  width: 6px;
+  background-color: rgb(18, 18, 18);
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: rgb(35, 177, 167);
+  border-radius: 3px;
+}
+
+.btnupload {
+  display: flex;
+  justify-content: center;
+}
+
+.btnnameimg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  .image-button {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 170px;
+    background-color: white;
+  }
+  .image-button:hover {
+    background-color: rgb(35, 177, 167);
+    color: white;
+  }
+  .active {
+    background-color: rgb(35, 177, 167);
+    color: white;
+  }
+  .locked {
+    color: white;
+    background-color: rgb(69, 123, 59);
+  }
+  // .locked:hover {
+  //   color: white;
+  //   background-color: rgb(231, 53, 53);
+  // }
+}

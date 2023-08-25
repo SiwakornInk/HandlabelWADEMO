@@ -1,0 +1,38 @@
+.container {
+  width: calc(100vw - 200px);
+  height: calc(100vh - 50px);
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  padding-top: 20px;
+  box-sizing: border-box;
+
+}
+.dflex {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ให้ center แนวนอน */
+
+}
+.selectedImage {
+    width: auto;
+    max-width: 700px;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+.heightboxcheckbox {
+    display: flex;
+    justify-content: center;
+    gap: 40px; /* ปรับระยะห่าง */
+    // width: 100%;
+    max-width: 700px; /* กำหนดความกว้างสูงสุด */
+    background-color: #ffffff; /* พื้นหลังสีขาว */
+    padding: 20px;
+    border-radius: 10px; /* ขอบมน */
+    // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* เงาเล็กๆ */
+}
+
